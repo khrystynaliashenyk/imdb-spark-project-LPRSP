@@ -30,6 +30,7 @@ Together, these files contain **39 features in total**, which makes the dataset 
 ### Why this dataset is suitable for the project
 
 The selected IMDb dataset is well suited for a big data project because it combines multiple related tables that can be joined and analyzed together. It includes both descriptive and relational data, which allows us to perform preprocessing, filtering, aggregation, feature engineering, and business-oriented transformations.
+
 ---
 
 ## Technologies Used
