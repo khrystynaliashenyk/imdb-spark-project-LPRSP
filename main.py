@@ -1,6 +1,8 @@
 import os
 import sys
 from pyspark.sql import SparkSession
+from data_loader import load_data
+from schemas.schema_name_basics import name_basics_schema
 
 
 def main():
@@ -9,27 +11,24 @@ def main():
 
     spark = (
         SparkSession.builder
-        .appName("IMDB-Docker-Test")
+        .appName("IMDB-Extraction-Stage")
         .config("spark.driver.host", "localhost")
         .getOrCreate()
     )
 
-    print("\n=== Spark Session started successfully ===")
-    print("Application name:", spark.sparkContext.appName)
-    print("Spark version:", spark.version)
+    dataset_name = "name.basics"
+    file_path = "/data/name.basics.tsv.gz"
 
-    sample_data = [
-        ("Initialization", "Successful"),
-        ("Container", "Running"),
-        ("PySpark", "Ready")
-    ]
+    df = load_data(spark, file_path, name_basics_schema)
 
-    df = spark.createDataFrame(sample_data, ["Component", "Status"])
+    print(f"\n=== Schema for {dataset_name} ===")
+    df.printSchema()
 
-    print("\n--- Sample DataFrame Preview ---")
-    df.show(truncate=False)
+    print(f"\n=== First 5 rows from {dataset_name} ===")
+    df.show(5, truncate=False)
 
-    print("\n=== Execution completed successfully ===\n")
+    print(f"\n=== Total number of rows in {dataset_name} ===")
+    print(df.count())
 
     spark.stop()
 
