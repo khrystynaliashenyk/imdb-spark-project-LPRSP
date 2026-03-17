@@ -5,6 +5,8 @@ from data_loader import load_data
 from schemas.schema_name_basics import name_basics_schema
 from schemas.schema_title_akas import title_akas_schema
 from schemas.schema_title_basics import title_basics_schema
+from schemas.schema_title_crew import title_crew_schema
+from schemas.schema_title_episode import title_episode_schema
 
 def main():
     os.environ["PYSPARK_PYTHON"] = sys.executable
@@ -25,6 +27,12 @@ def main():
 
     dataset_name2 = "title.basics"
     file_path2 = "/data/title.basics.tsv.gz"
+
+    dataset_name3 = "title.crew"
+    file_path3 = "/data/title.crew.tsv.gz"
+
+    dataset_name4 = "title.episode"
+    file_path4 = "/data/title.episode.tsv.gz"
 
     df = load_data(spark, file_path, name_basics_schema)
 
@@ -58,6 +66,23 @@ def main():
 
     print(f"\n=== Total number of rows in {dataset_name2} ===")
     print(df2.count())
+
+    df3 = load_data(spark, file_path3, title_crew_schema)
+    print(f"\n=== Schema for {dataset_name3} ===")
+    df3.printSchema()
+    print(f"\n=== First 5 rows from {dataset_name3} ===")
+    df3.show(5, truncate=False)
+    print(f"\n=== Total number of rows in {dataset_name3} ===")
+    print(df3.count())
+
+    df4 = load_data(spark, file_path4, title_episode_schema)
+    print(f"\n=== Schema for {dataset_name4} ===")
+    df4.printSchema()
+    print(f"\n=== First 5 rows from {dataset_name4} ===")
+    df4.show(5, truncate=False)
+    print(f"\n=== Total number of rows in {dataset_name4} ===")
+    print(df4.count())
+
     spark.stop()
 
 
