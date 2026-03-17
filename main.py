@@ -8,6 +8,7 @@ from schemas.schema_title_basics import title_basics_schema
 from schemas.schema_title_crew import title_crew_schema
 from schemas.schema_title_episode import title_episode_schema
 from schemas.schema_title_principals import title_principals_schema
+from schemas.schema_title_ratings import title_ratings_schema
 
 def main():
     os.environ["PYSPARK_PYTHON"] = sys.executable
@@ -37,6 +38,9 @@ def main():
 
     dataset_name5 = "title.principals"
     file_path5 = "/data/title.principals.tsv.gz"
+
+    dataset_name6 = "title.ratings"
+    file_path6 = "/data/title.ratings.tsv.gz"
 
     df = load_data(spark, file_path, name_basics_schema)
 
@@ -94,6 +98,14 @@ def main():
     df5.show(5, truncate=False)
     print(f"\n=== Total number of rows in {dataset_name5} ===")
     print(df5.count())
+
+    df6 = load_data(spark, file_path6, title_ratings_schema)
+    print(f"\n=== Schema for {dataset_name6} ===")
+    df6.printSchema()
+    print(f"\n=== First 5 rows from {dataset_name6} ===")
+    df6.show(5, truncate=False)
+    print(f"\n=== Total number of rows in {dataset_name6} ===")
+    print(df6.count())
 
     spark.stop()
 
