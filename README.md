@@ -160,7 +160,7 @@ All team members participated in local environment configuration.
 ### Етап 3 — Етап видобування
 
 - **Kateryna Rubtsova** - реалізація універсального модуля data_loader, створення схеми до name.basics, інтеграція та тестування в main.py.
-- **Sofia Pasichko** - main, title.akas, title.basics
+- **Sofia Pasichko** - main, title.akas, title.basics, оформлення звіту
 - **Khrystyna Liashenyk** - main, title.ratings
-- **Yulia Salishcheva** - main, title.principals
-- **Khrystyna Liashenyk** - main, title.ratings
+- **Yulia Salishcheva** - main, title.principals, офомлення README.md
+- **Khrystyna Liashenyk** - main, title.ratings, офомлення презентації
