@@ -224,3 +224,69 @@ def preprocess_title_episode(df: DataFrame) -> DataFrame:
     )
 
     return df
+
+def preprocess_title_principals(df: DataFrame) -> DataFrame:
+    df = _replace_imdb_missing_markers(df)
+
+    text_cols = ["tconst", "nconst", "category", "job", "characters"]
+    for c in text_cols:
+        if c in df.columns:
+            df = df.withColumn(c, trim(col(c)))
+
+    df = df.withColumn("ordering", col("ordering").cast(IntegerType()))
+
+    if "category" in df.columns:
+        df = df.withColumn("categoryNorm", lower(col("category")))
+
+    df = df.withColumn(
+        "jobArray",
+        when(col("job").isNotNull(), split(col("job"), ","))
+    )
+
+    df = df.withColumn(
+        "jobCount",
+        when(col("jobArray").isNotNull(), size(col("jobArray")))
+    )
+
+    df = df.withColumn(
+        "charactersClean",
+        when(col("characters").isNotNull(), trim(col("characters")))
+    )
+
+    df = df.withColumn(
+        "charactersClean",
+        when(col("charactersClean").isNotNull(),
+             col("charactersClean").substr(2, 1000))
+    )
+
+    df = df.withColumn(
+        "charactersArray",
+        when(col("characters").isNotNull(), split(col("characters"), ","))
+    )
+
+    df = df.withColumn(
+        "charactersCount",
+        when(col("charactersArray").isNotNull(), size(col("charactersArray")))
+    )
+
+    df = df.withColumn(
+        "isActor",
+        when(col("category").isin("actor", "actress"), 1).otherwise(0)
+    )
+
+    df = df.withColumn(
+        "isDirector",
+        when(col("category") == "director", 1).otherwise(0)
+    )
+
+    df = df.withColumn(
+        "hasJob",
+        when(col("job").isNotNull(), 1).otherwise(0)
+    )
+
+    df = df.withColumn(
+        "hasCharacters",
+        when(col("characters").isNotNull(), 1).otherwise(0)
+    )
+
+    return df

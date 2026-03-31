@@ -14,7 +14,9 @@ from preprocessing.preprocessing_files import preprocess_title_akas, preprocess_
 from preprocessing.eda_stats import (
     get_metadata,
     get_numerical_stats,
-    get_missing_values
+    get_missing_values,
+    get_duplicates_count,
+    get_categorical_stats
 )
 
 
@@ -63,6 +65,8 @@ def main():
     get_metadata(df)
     get_numerical_stats(df, ["birthYear", "deathYear", "professionCount", "knownTitlesCount"])
     get_missing_values(df)
+    get_duplicates_count(df)
+    get_categorical_stats(df, ["primaryProfession"])
 
     df1 = load_data(spark, file_path1, title_akas_schema)
 
@@ -79,6 +83,8 @@ def main():
     get_metadata(df1)
     get_numerical_stats(df1, ["ordering", "typesCount", "attributesCount"])
     get_missing_values(df1)
+    get_duplicates_count(df1)
+    get_categorical_stats(df1, ["region", "language", "types"])
 
     df2 = load_data(spark, file_path2, title_basics_schema)
 
@@ -95,30 +101,57 @@ def main():
     get_metadata(df2)
     get_numerical_stats(df2, ["startYear", "endYear", "runtimeMinutes", "genresCount"])
     get_missing_values(df2)
+    get_duplicates_count(df2)
+    get_categorical_stats(df2, ["titleType", "isAdult", "genres"])
+
 
     df3 = load_data(spark, file_path3, title_crew_schema)
-    print(f"\n=== Schema for {dataset_name3} ===")
+
+    print(f"\n=== RAW DATA: {dataset_name3} ===")
     df3.printSchema()
-    print(f"\n=== First 5 rows from {dataset_name3} ===")
     df3.show(5, truncate=False)
-    print(f"\n=== Total number of rows in {dataset_name3} ===")
-    print(df3.count())
+    print(f"Total number of rows in {dataset_name3}: {df3.count()}")
+
+    df3 = preprocess_title_crew(df3)
+
+    print(f"\n=== PREPROCESSED DATA: {dataset_name3} ===")
+    get_metadata(df3)
+    get_numerical_stats(df3, ["directorsCount", "writersCount"])
+    get_missing_values(df3)
+    get_duplicates_count(df3)
+    get_categorical_stats(df3, ["directors", "writers"])
 
     df4 = load_data(spark, file_path4, title_episode_schema)
-    print(f"\n=== Schema for {dataset_name4} ===")
+
+    print(f"\n=== RAW DATA: {dataset_name4} ===")
     df4.printSchema()
-    print(f"\n=== First 5 rows from {dataset_name4} ===")
     df4.show(5, truncate=False)
-    print(f"\n=== Total number of rows in {dataset_name4} ===")
-    print(df4.count())
+    print(f"Total number of rows in {dataset_name4}: {df4.count()}")
+
+    df4 = preprocess_title_episode(df4)
+
+    print(f"\n=== PREPROCESSED DATA: {dataset_name4} ===")
+    get_metadata(df4)
+    get_numerical_stats(df4, ["seasonNumber", "episodeNumber"])
+    get_missing_values(df4)
+    get_duplicates_count(df4)
+    get_categorical_stats(df3, ["directors", "writers"])
 
     df5 = load_data(spark, file_path5, title_principals_schema)
-    print(f"\n=== Schema for {dataset_name5} ===")
+
+    print(f"\n=== RAW DATA: {dataset_name5} ===")
     df5.printSchema()
-    print(f"\n=== First 5 rows from {dataset_name5} ===")
     df5.show(5, truncate=False)
-    print(f"\n=== Total number of rows in {dataset_name5} ===")
-    print(df5.count())
+    print(f"Total number of rows in {dataset_name5}: {df5.count()}")
+
+    df5 = preprocess_title_principals(df5)
+
+    print(f"\n=== PREPROCESSED DATA: {dataset_name5} ===")
+    get_metadata(df5)
+    get_numerical_stats(df5, ["ordering", "jobCount", "charactersCount"])
+    get_missing_values(df5)
+    get_duplicates_count(df5)
+    get_categorical_stats(df5, ["category", "job"])
 
     df6 = load_data(spark, file_path6, title_ratings_schema)
     print(f"\n=== Schema for {dataset_name6} ===")

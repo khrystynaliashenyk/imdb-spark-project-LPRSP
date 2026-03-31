@@ -55,3 +55,11 @@ def get_duplicates_count(df: DataFrame) -> None:
     total = df.count()
     unique = df.dropDuplicates().count()
     print(f"Кількість дублікатів: {total - unique}")
+
+
+def get_categorical_stats(df: DataFrame, categorical_cols: list) -> None:
+    print("\n=== CATEGORICAL STATS ===")
+    for col_name in categorical_cols:
+        if col_name in df.columns:
+            print(f"\n--- Найчастіші значення для {col_name} ---")
+            df.groupBy(col_name).count().orderBy(F.desc("count")).show(10, truncate=False)
