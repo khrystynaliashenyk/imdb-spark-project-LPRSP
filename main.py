@@ -9,15 +9,18 @@ from schemas.schema_title_crew import title_crew_schema
 from schemas.schema_title_episode import title_episode_schema
 from schemas.schema_title_principals import title_principals_schema
 from schemas.schema_title_ratings import title_ratings_schema
-from preprocessing.preprocessing_files import preprocess_name_basics
-from preprocessing.preprocessing_files import preprocess_title_akas, preprocess_title_basics
+from preprocessing.preprocessing_files import preprocess_name_basics, preprocess_title_ratings
+from preprocessing.preprocessing_files import preprocess_title_akas, preprocess_title_basics, preprocess_title_crew, preprocess_title_episode, preprocess_title_principals
 from preprocessing.eda_stats import (
     get_metadata,
     get_numerical_stats,
     get_missing_values,
     get_duplicates_count,
-    get_categorical_stats
+    get_categorical_stats,
+    analyze_feature_informativeness, get_column_types
 )
+from pyspark.sql.types import NumericType
+from preprocessing.eda_stats import run_numerical_plots
 
 
 def main():
@@ -60,13 +63,20 @@ def main():
     print(f"Total number of rows in {dataset_name}: {df.count()}")
 
     df = preprocess_name_basics(df)
-
     print(f"\n=== PREPROCESSED DATA: {dataset_name} ===")
     get_metadata(df)
     get_numerical_stats(df, ["birthYear", "deathYear", "professionCount", "knownTitlesCount"])
     get_missing_values(df)
     get_duplicates_count(df)
     get_categorical_stats(df, ["primaryProfession"])
+    numerical_cols, categorical_cols = get_column_types(df)
+    analyze_feature_informativeness(df, numerical_cols, categorical_cols)
+
+    run_numerical_plots(
+        df,
+        ["birthYear", "deathYear", "professionCount", "knownTitlesCount"],
+        dataset_name="name_basics"
+    )
 
     df1 = load_data(spark, file_path1, title_akas_schema)
 
@@ -85,6 +95,15 @@ def main():
     get_missing_values(df1)
     get_duplicates_count(df1)
     get_categorical_stats(df1, ["region", "language", "types"])
+    numerical_cols, categorical_cols = get_column_types(df1)
+
+    analyze_feature_informativeness(df1, numerical_cols, categorical_cols)
+
+    run_numerical_plots(
+        df1,
+        ["ordering", "typesCount", "attributesCount"],
+        dataset_name="title_akas"
+    )
 
     df2 = load_data(spark, file_path2, title_basics_schema)
 
@@ -103,7 +122,15 @@ def main():
     get_missing_values(df2)
     get_duplicates_count(df2)
     get_categorical_stats(df2, ["titleType", "isAdult", "genres"])
+    numerical_cols, categorical_cols = get_column_types(df2)
 
+    analyze_feature_informativeness(df2, numerical_cols, categorical_cols)
+
+    run_numerical_plots(
+        df2,
+        ["startYear", "endYear", "runtimeMinutes", "genresCount"],
+        dataset_name="title_basics"
+    )
 
     df3 = load_data(spark, file_path3, title_crew_schema)
 
@@ -120,6 +147,15 @@ def main():
     get_missing_values(df3)
     get_duplicates_count(df3)
     get_categorical_stats(df3, ["directors", "writers"])
+    numerical_cols, categorical_cols = get_column_types(df3)
+
+    analyze_feature_informativeness(df3, numerical_cols, categorical_cols)
+
+    run_numerical_plots(
+        df3,
+        ["directorsCount", "writersCount"],
+        dataset_name="title_crew"
+    )
 
     df4 = load_data(spark, file_path4, title_episode_schema)
 
@@ -135,7 +171,16 @@ def main():
     get_numerical_stats(df4, ["seasonNumber", "episodeNumber"])
     get_missing_values(df4)
     get_duplicates_count(df4)
-    get_categorical_stats(df3, ["directors", "writers"])
+    get_categorical_stats(df4, ["directors", "writers"])
+    numerical_cols, categorical_cols = get_column_types(df4)
+
+    analyze_feature_informativeness(df4, numerical_cols, categorical_cols)
+
+    run_numerical_plots(
+        df4,
+        ["seasonNumber", "episodeNumber"],
+        dataset_name="title_episode"
+    )
 
     df5 = load_data(spark, file_path5, title_principals_schema)
 
@@ -152,14 +197,40 @@ def main():
     get_missing_values(df5)
     get_duplicates_count(df5)
     get_categorical_stats(df5, ["category", "job"])
+    numerical_cols, categorical_cols = get_column_types(df5)
+
+    analyze_feature_informativeness(df5, numerical_cols, categorical_cols)
+
+    run_numerical_plots(
+        df5,
+        ["ordering", "jobCount", "charactersCount"],
+        dataset_name="title_principals"
+    )
 
     df6 = load_data(spark, file_path6, title_ratings_schema)
-    print(f"\n=== Schema for {dataset_name6} ===")
+
+    print(f"\n=== RAW DATA: {dataset_name6} ===")
     df6.printSchema()
-    print(f"\n=== First 5 rows from {dataset_name6} ===")
     df6.show(5, truncate=False)
-    print(f"\n=== Total number of rows in {dataset_name6} ===")
-    print(df6.count())
+    print(f"Total number of rows in {dataset_name6}: {df6.count()}")
+    df6 = preprocess_title_ratings(df6)
+
+    print(f"\n=== PREPROCESSED DATA: {dataset_name6} ===")
+    get_metadata(df6)
+
+    numerical_stats_cols = ["averageRating", "numVotes", "weightedScore"]
+    get_numerical_stats(df6, [c for c in numerical_stats_cols if c in df6.columns])
+
+    get_missing_values(df6)
+    get_duplicates_count(df6)
+    numerical_cols, categorical_cols = get_column_types(df6)
+
+    analyze_feature_informativeness(df6, numerical_cols, categorical_cols)
+    run_numerical_plots(
+        df6,
+        ["averageRating", "numVotes", "weightedScore"],
+        dataset_name="title_ratings"
+    )
 
     spark.stop()
 

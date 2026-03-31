@@ -1,7 +1,8 @@
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when, split, size, trim, lower
-from pyspark.sql.types import IntegerType
-
+from pyspark.sql.types import IntegerType, DoubleType
+from pyspark.sql import functions as F
+from pyspark.sql.types import NumericType
 
 def preprocess_name_basics(df: DataFrame) -> DataFrame:
     df = df.select([
@@ -288,5 +289,33 @@ def preprocess_title_principals(df: DataFrame) -> DataFrame:
         "hasCharacters",
         when(col("characters").isNotNull(), 1).otherwise(0)
     )
+
+    return df
+
+
+def preprocess_title_ratings(df: DataFrame) -> DataFrame:
+    df = _replace_imdb_missing_markers(df)
+
+    if "tconst" in df.columns:
+        df = df.withColumn("tconst", trim(col("tconst")))
+
+    df = df.withColumn("averageRating", col("averageRating").cast(DoubleType()))
+    df = df.withColumn("numVotes", col("numVotes").cast(IntegerType()))
+
+    df = df.withColumn(
+        "isPopular",
+        when(col("numVotes") > 100000, 1).otherwise(0)
+    )
+
+    df = df.withColumn(
+        "ratingCategory",
+        when(col("averageRating") >= 8.0, "High")
+        .when(col("averageRating") >= 5.0, "Medium")
+        .otherwise("Low")
+    )
+
+    df = df.withColumn(
+        "weightedScore",
+        F.col("averageRating") * F.log10(F.col("numVotes") + 1)    )
 
     return df
