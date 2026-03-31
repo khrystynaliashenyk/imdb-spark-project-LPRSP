@@ -1,20 +1,17 @@
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when, split, size
+from pyspark.sql.functions import col, when, split, size, trim
 from pyspark.sql.types import IntegerType
 
 
 def preprocess_name_basics(df: DataFrame) -> DataFrame:
-    # Замінюємо службове позначення пропусків \N на null
     df = df.select([
         when(col(c) == "\\N", None).otherwise(col(c)).alias(c)
         for c in df.columns
     ])
 
-    # Приводимо роки до числового типу
     df = df.withColumn("birthYear", col("birthYear").cast(IntegerType()))
     df = df.withColumn("deathYear", col("deathYear").cast(IntegerType()))
 
-    # Парсинг рядків зі списками у масиви
     df = df.withColumn(
         "primaryProfessionArray",
         when(col("primaryProfession").isNotNull(), split(col("primaryProfession"), ","))
@@ -25,7 +22,6 @@ def preprocess_name_basics(df: DataFrame) -> DataFrame:
         when(col("knownForTitles").isNotNull(), split(col("knownForTitles"), ","))
     )
 
-    # Додаткові похідні ознаки
     df = df.withColumn(
         "professionCount",
         when(col("primaryProfessionArray").isNotNull(), size(col("primaryProfessionArray")))
@@ -34,6 +30,144 @@ def preprocess_name_basics(df: DataFrame) -> DataFrame:
     df = df.withColumn(
         "knownTitlesCount",
         when(col("knownForTitlesArray").isNotNull(), size(col("knownForTitlesArray")))
+    )
+
+    return df
+
+
+def _replace_imdb_missing_markers(df: DataFrame) -> DataFrame:
+
+    return df.select([
+        when(trim(col(c)) == "\\N", None).otherwise(col(c)).alias(c)
+        for c in df.columns
+    ])
+
+def preprocess_title_akas(df: DataFrame) -> DataFrame:
+    df = _replace_imdb_missing_markers(df)
+
+    text_cols = ["title", "region", "language", "types", "attributes"]
+    for c in text_cols:
+        if c in df.columns:
+            df = df.withColumn(c, trim(col(c)))
+
+    df = df.withColumn("ordering", col("ordering").cast(IntegerType()))
+    df = df.withColumn("isOriginalTitle", col("isOriginalTitle").cast(IntegerType()))
+
+    df = df.withColumn(
+        "isOriginalTitle",
+        when(col("isOriginalTitle").isin(0, 1), col("isOriginalTitle"))
+    )
+
+    df = df.withColumn(
+        "typesArray",
+        when(col("types").isNotNull(), split(col("types"), ","))
+    )
+
+    df = df.withColumn(
+        "attributesArray",
+        when(col("attributes").isNotNull(), split(col("attributes"), ","))
+    )
+
+    df = df.withColumn(
+        "typesCount",
+        when(col("typesArray").isNotNull(), size(col("typesArray")))
+    )
+
+    df = df.withColumn(
+        "attributesCount",
+        when(col("attributesArray").isNotNull(), size(col("attributesArray")))
+    )
+
+    if "language" in df.columns:
+        df = df.withColumn("languageNorm", lower(col("language")))
+
+    if "region" in df.columns:
+        df = df.withColumn("regionNorm", lower(col("region")))
+
+    return df
+
+
+def preprocess_title_basics(df: DataFrame) -> DataFrame:
+    df = _replace_imdb_missing_markers(df)
+
+    text_cols = ["titleType", "primaryTitle", "originalTitle", "genres"]
+    for c in text_cols:
+        if c in df.columns:
+            df = df.withColumn(c, trim(col(c)))
+
+    df = df.withColumn("isAdult", col("isAdult").cast(IntegerType()))
+    df = df.withColumn("startYear", col("startYear").cast(IntegerType()))
+    df = df.withColumn("endYear", col("endYear").cast(IntegerType()))
+    df = df.withColumn("runtimeMinutes", col("runtimeMinutes").cast(IntegerType()))
+
+    df = df.withColumn(
+        "isAdult",
+        when(col("isAdult").isin(0, 1), col("isAdult"))
+    )
+
+    df = df.withColumn(
+        "startYear",
+        when((col("startYear") >= 1800) & (col("startYear") <= 2026), col("startYear"))
+    )
+
+    df = df.withColumn(
+        "endYear",
+        when((col("endYear") >= 1800) & (col("endYear") <= 2026), col("endYear"))
+    )
+
+    df = df.withColumn(
+        "endYear",
+        when(
+            col("startYear").isNotNull() & col("endYear").isNotNull() &
+            (col("endYear") >= col("startYear")),
+            col("endYear")
+        ).when(col("endYear").isNull(), None)
+         .otherwise(None)
+    )
+
+    df = df.withColumn(
+        "runtimeMinutes",
+        when(
+            col("runtimeMinutes").isNotNull() &
+            (col("runtimeMinutes") > 0) &
+            (col("runtimeMinutes") <= 1440),
+            col("runtimeMinutes")
+        )
+    )
+
+    df = df.withColumn(
+        "genresArray",
+        when(col("genres").isNotNull(), split(col("genres"), ","))
+    )
+
+    df = df.withColumn(
+        "genresCount",
+        when(col("genresArray").isNotNull(), size(col("genresArray")))
+    )
+
+    df = df.withColumn(
+        "isSeries",
+        when(col("endYear").isNotNull(), 1).otherwise(0)
+    )
+
+    df = df.withColumn(
+        "hasGenres",
+        when(col("genres").isNotNull(), 1).otherwise(0)
+    )
+
+    df = df.withColumn(
+        "hasDrama",
+        when(col("genres").contains("Drama"), 1).otherwise(0)
+    )
+
+    df = df.withColumn(
+        "hasComedy",
+        when(col("genres").contains("Comedy"), 1).otherwise(0)
+    )
+
+    df = df.withColumn(
+        "hasAction",
+        when(col("genres").contains("Action"), 1).otherwise(0)
     )
 
     return df

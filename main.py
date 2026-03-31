@@ -10,9 +10,11 @@ from schemas.schema_title_episode import title_episode_schema
 from schemas.schema_title_principals import title_principals_schema
 from schemas.schema_title_ratings import title_ratings_schema
 from preprocessing.preprocessing_files import preprocess_name_basics
+from preprocessing.preprocessing_files import preprocess_title_akas, preprocess_title_basics
 from preprocessing.eda_stats import (
     get_metadata,
-    get_numerical_stats
+    get_numerical_stats,
+    get_missing_values
 )
 
 
@@ -60,29 +62,39 @@ def main():
     print(f"\n=== PREPROCESSED DATA: {dataset_name} ===")
     get_metadata(df)
     get_numerical_stats(df, ["birthYear", "deathYear", "professionCount", "knownTitlesCount"])
-
+    get_missing_values(df)
 
     df1 = load_data(spark, file_path1, title_akas_schema)
 
-    print(f"\n=== Schema for {dataset_name1} ===")
+    print(f"\n=== RAW DATA: {dataset_name1} ===")
     df1.printSchema()
-
-    print(f"\n=== First 5 rows from {dataset_name1} ===")
     df1.show(5, truncate=False)
+    print(f"Total number of rows in {dataset_name1}: {df1.count()}")
 
-    print(f"\n=== Total number of rows in {dataset_name1} ===")
-    print(df1.count())
+    df1 = preprocess_title_akas(df1)
+
+    print(f"\n=== PREPROCESSED DATA: {dataset_name1} ===")
+    df1.printSchema()
+    df1.show(5, truncate=False)
+    get_metadata(df1)
+    get_numerical_stats(df1, ["ordering", "typesCount", "attributesCount"])
+    get_missing_values(df1)
 
     df2 = load_data(spark, file_path2, title_basics_schema)
 
-    print(f"\n=== Schema for {dataset_name2} ===")
+    print(f"\n=== RAW DATA: {dataset_name2} ===")
     df2.printSchema()
-
-    print(f"\n=== First 5 rows from {dataset_name2} ===")
     df2.show(5, truncate=False)
+    print(f"Total number of rows in {dataset_name2}: {df2.count()}")
 
-    print(f"\n=== Total number of rows in {dataset_name2} ===")
-    print(df2.count())
+    df2 = preprocess_title_basics(df2)
+
+    print(f"\n=== PREPROCESSED DATA: {dataset_name2} ===")
+    df2.printSchema()
+    df2.show(5, truncate=False)
+    get_metadata(df2)
+    get_numerical_stats(df2, ["startYear", "endYear", "runtimeMinutes", "genresCount"])
+    get_missing_values(df2)
 
     df3 = load_data(spark, file_path3, title_crew_schema)
     print(f"\n=== Schema for {dataset_name3} ===")
