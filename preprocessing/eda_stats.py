@@ -48,3 +48,10 @@ def get_missing_values(df: DataFrame) -> None:
         )
 
     df.select(missing_exprs).show(truncate=False)
+
+
+def get_duplicates_count(df: DataFrame) -> None:
+    print("\n=== DUPLICATES ===")
+    total = df.count()
+    unique = df.dropDuplicates().count()
+    print(f"Кількість дублікатів: {total - unique}")

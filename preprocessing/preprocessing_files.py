@@ -1,5 +1,5 @@
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when, split, size, trim
+from pyspark.sql.functions import col, when, split, size, trim, lower
 from pyspark.sql.types import IntegerType
 
 
@@ -168,6 +168,59 @@ def preprocess_title_basics(df: DataFrame) -> DataFrame:
     df = df.withColumn(
         "hasAction",
         when(col("genres").contains("Action"), 1).otherwise(0)
+    )
+
+    return df
+
+
+def preprocess_title_crew(df: DataFrame) -> DataFrame:
+    df = _replace_imdb_missing_markers(df)
+
+    text_cols = ["directors", "writers"]
+    for c in text_cols:
+        if c in df.columns:
+            df = df.withColumn(c, trim(col(c)))
+
+    df = df.withColumn(
+        "directorsArray",
+        when(col("directors").isNotNull(), split(col("directors"), ","))
+    )
+
+    df = df.withColumn(
+        "writersArray",
+        when(col("writers").isNotNull(), split(col("writers"), ","))
+    )
+
+    df = df.withColumn(
+        "directorsCount",
+        when(col("directorsArray").isNotNull(), size(col("directorsArray")))
+    )
+
+    df = df.withColumn(
+        "writersCount",
+        when(col("writersArray").isNotNull(), size(col("writersArray")))
+    )
+
+    return df
+
+
+def preprocess_title_episode(df: DataFrame) -> DataFrame:
+    df = _replace_imdb_missing_markers(df)
+
+    if "parentTconst" in df.columns:
+        df = df.withColumn("parentTconst", trim(col("parentTconst")))
+
+    df = df.withColumn("seasonNumber", col("seasonNumber").cast(IntegerType()))
+    df = df.withColumn("episodeNumber", col("episodeNumber").cast(IntegerType()))
+
+    df = df.withColumn(
+        "seasonNumber",
+        when(col("seasonNumber") >= 0, col("seasonNumber"))
+    )
+
+    df = df.withColumn(
+        "episodeNumber",
+        when(col("episodeNumber") >= 0, col("episodeNumber"))
     )
 
     return df
