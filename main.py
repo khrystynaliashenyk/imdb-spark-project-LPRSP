@@ -9,6 +9,12 @@ from schemas.schema_title_crew import title_crew_schema
 from schemas.schema_title_episode import title_episode_schema
 from schemas.schema_title_principals import title_principals_schema
 from schemas.schema_title_ratings import title_ratings_schema
+from preprocessing.preprocessing_files import preprocess_name_basics
+from preprocessing.eda_stats import (
+    get_metadata,
+    get_numerical_stats
+)
+
 
 def main():
     os.environ["PYSPARK_PYTHON"] = sys.executable
@@ -44,14 +50,17 @@ def main():
 
     df = load_data(spark, file_path, name_basics_schema)
 
-    print(f"\n=== Schema for {dataset_name} ===")
+    print(f"\n=== RAW DATA: {dataset_name} ===")
     df.printSchema()
-
-    print(f"\n=== First 5 rows from {dataset_name} ===")
     df.show(5, truncate=False)
+    print(f"Total number of rows in {dataset_name}: {df.count()}")
 
-    print(f"\n=== Total number of rows in {dataset_name} ===")
-    print(df.count())
+    df = preprocess_name_basics(df)
+
+    print(f"\n=== PREPROCESSED DATA: {dataset_name} ===")
+    get_metadata(df)
+    get_numerical_stats(df, ["birthYear", "deathYear", "professionCount", "knownTitlesCount"])
+
 
     df1 = load_data(spark, file_path1, title_akas_schema)
 
