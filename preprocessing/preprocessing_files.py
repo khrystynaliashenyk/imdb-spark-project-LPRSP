@@ -14,6 +14,25 @@ def preprocess_name_basics(df: DataFrame) -> DataFrame:
     df = df.withColumn("deathYear", col("deathYear").cast(IntegerType()))
 
     df = df.withColumn(
+        "birthYear",
+        when((col("birthYear") >= 1800) & (col("birthYear") <= 2026), col("birthYear"))
+    )
+
+    df = df.withColumn(
+        "deathYear",
+        when((col("deathYear") >= 1800) & (col("deathYear") <= 2026), col("deathYear"))
+    )
+
+    df = df.withColumn(
+        "deathYear",
+        when(
+            col("birthYear").isNotNull() & col("deathYear").isNotNull() &
+            (col("deathYear") >= col("birthYear")),
+            col("deathYear")
+        )
+    )
+
+    df = df.withColumn(
         "primaryProfessionArray",
         when(col("primaryProfession").isNotNull(), split(col("primaryProfession"), ","))
     )
