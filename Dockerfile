@@ -5,7 +5,7 @@ RUN apt-get update && \
     apt-get clean
 
 RUN pip install --no-cache-dir pyspark==3.2.0
-
+RUN pip install matplotlib seaborn
 WORKDIR /app
 
 COPY . /app
