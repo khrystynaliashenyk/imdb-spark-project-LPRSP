@@ -30,6 +30,14 @@ from transformation.business_questions_katya import (
    question_5_top_movies_by_genre,
    question_6_top_movie_each_year
 )
+from transformation.business_questions_sofia import (
+    question_1_top_series_episodes,
+    question_2_longest_episode_per_season,
+    question_3_movies_no_writers,
+    question_4_longest_movies_per_year,
+    question_5_multiple_directors,
+    question_6_max_seasons_series
+)
 
 def main():
     os.environ["PYSPARK_PYTHON"] = sys.executable
@@ -265,7 +273,34 @@ def main():
     q6 = question_6_top_movie_each_year(df2, df6)
     q6.show(100, truncate=False)
 
+    print("\n=== Q1: Які 3 серіали у кожному кіножанрі мають найбільшу загальну кількість випущених епізодів? ===")
+    q1 = question_1_top_series_episodes(df2, df4)
+    q1.show(20, truncate=False)
+
+    print("\n=== Q2: Який епізод має найбільшу тривалість у кожному сезоні? ===")
+    q2 = question_2_longest_episode_per_season(df2, df4)
+    q2.show(20, truncate=False)
+
+    print("\n=== Q3: Скільки фільмів випущено без сценаристів? ===")
+    q3 = question_3_movies_no_writers(df2, df3)
+    q3.show(20, truncate=False)
+
+    print("\n=== Q4: Які 5 найдовших фільмів кожного року? ===")
+    q4 = question_4_longest_movies_per_year(df2)
+    q4.show(20, truncate=False)
+
+    print("\n=== Q5: Фільми у 'режисерському співавторстві'? ===")
+    q5 = question_5_multiple_directors(df2, df3)
+    q5.show(20, truncate=False)
+
+    print("\n=== Q6: Які серіали мають найбільшу кількість сезонів? ===")
+    q6 = question_6_max_seasons_series(df2, df4)
+    q6.show(20, truncate=False)
+
     spark.stop()
+
+
+
 
 
 if __name__ == "__main__":
