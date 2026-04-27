@@ -50,6 +50,15 @@ from transformation.business_questions_sofiia_pas import (
     question_6_top_rated_movie_per_year
 )
 
+from transformation.business_questions_khrystyna import (
+   question_1_debut_directors,
+   question_2_top5_genres_by_decade,
+   question_3_writer_quality_index,
+   question_4_high_rated_per_year,
+   question_5_avg_rating_by_country,
+   question_6_actors_by_total_votes
+)
+
 
 def main():
     os.environ["PYSPARK_PYTHON"] = sys.executable
@@ -359,6 +368,32 @@ def main():
     print("\n=== Q6: Найрейтинговіший фільм кожного року (2020-2024) ===")
     sq6 = question_6_top_rated_movie_per_year(df2, df6)
     sq6.show(10, truncate=False)
+
+    print("\n=== TRANSFORMATION STAGE ===")
+
+    print("\n=== Q1: Найвищий рейтинговий дебютний фільм режисера ===")
+    q1 = question_1_debut_directors(df2, df3, df6, df)
+    q1.show(20, truncate=False)
+
+    print("\n=== Q2: Топ-5 жанрів по десятиліттях з 1980-го ===")
+    q2 = question_2_top5_genres_by_decade(df2, df6)
+    q2.show(50, truncate=False)
+
+    print("\n=== Q3: Сценаристи з найвищим індексом якості (мін. 8 фільмів) ===")
+    q3 = question_3_writer_quality_index(df3, df2, df6, df)
+    q3.show(20, truncate=False)
+
+    print("\n=== Q4: Скільки фільмів щороку отримують рейтинг вище 8.0? ===")
+    q4 = question_4_high_rated_per_year(df2, df6)
+    q4.show(50, truncate=False)
+
+    print("\n=== Q5: Середній рейтинг фільмів за країною виробництва ===")
+    q5 = question_5_avg_rating_by_country(df1, df2, df6)
+    q5.show(20, truncate=False)
+
+    print("\n=== Q6: Актори у фільмах з найбільшою сумарною кількістю голосів ===")
+    q6 = question_6_actors_by_total_votes(df5, df2, df6, df)
+    q6.show(20, truncate=False)
 
     spark.stop()
 
