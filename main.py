@@ -30,6 +30,7 @@ from transformation.business_questions_katya import (
    question_5_top_movies_by_genre,
    question_6_top_movie_each_year
 )
+
 from transformation.business_questions_sofia import (
     question_1_top_series_episodes,
     question_2_longest_episode_per_season,
@@ -38,6 +39,7 @@ from transformation.business_questions_sofia import (
     question_5_multiple_directors,
     question_6_max_seasons_series
 )
+from transformation import business_questions_yuliia as bq
 
 def main():
     os.environ["PYSPARK_PYTHON"] = sys.executable
@@ -296,6 +298,30 @@ def main():
     print("\n=== Q6: Які серіали мають найбільшу кількість сезонів? ===")
     q6 = question_6_max_seasons_series(df2, df4)
     q6.show(20, truncate=False)
+
+    print("\n=== Q1: Фільми з високим рейтингом, але малою кількістю голосів: ===")
+    bq.high_rating_low_votes(df2, df6).explain()
+    bq.high_rating_low_votes(df2, df6).show(10)
+
+    print("\n=== Q2: Найкращий фільм у кожному жанрі за рейтингом:  ===")
+    bq.best_movie_per_genre(df2, df6).explain()
+    bq.best_movie_per_genre(df2, df6).show(10)
+
+    print("\n=== Q3: Медіанна тривалість фільмів у кожному жанрі:  ===")
+    bq.median_runtime_per_genre(df2).explain()
+    bq.median_runtime_per_genre(df2).show(10)
+
+    print("\n=== Q4: Ефективність жанрів (Рейтинг / Тривалість):  ===")
+    bq.genre_efficiency(df2, df6).explain()
+    bq.genre_efficiency(df2, df6).show(10)
+
+    print("\n=== Q5: Фільми-рекордсмени (Довгі та високий рейтинг):  ===")
+    bq.epic_high_rated_movies(df2, df6).explain()
+    bq.epic_high_rated_movies(df2, df6).show(10)
+
+    print("\n=== Q6: Порівняння ер: Класика vs Сучасність:  ===")
+    bq.old_vs_new_genres(df2, df6).explain()
+    bq.old_vs_new_genres(df2, df6).show(10)
 
     spark.stop()
 
