@@ -22,6 +22,14 @@ from preprocessing.eda_stats import (
 from pyspark.sql.types import NumericType
 from preprocessing.eda_stats import run_numerical_plots
 
+from transformation.business_questions_katya import (
+   question_1_top_modern_genres,
+   question_2_runtime_rating,
+   question_3_top_actors,
+   question_4_rating_by_year,
+   question_5_top_movies_by_genre,
+   question_6_top_movie_each_year
+)
 
 def main():
     os.environ["PYSPARK_PYTHON"] = sys.executable
@@ -231,6 +239,31 @@ def main():
         ["averageRating", "numVotes", "weightedScore"],
         dataset_name="title_ratings"
     )
+    print("\n=== TRANSFORMATION STAGE ===")
+
+    print("\n=== Q1: Які жанри фільмів після 2010 року мають найвищий середній рейтинг? ===")
+    q1 = question_1_top_modern_genres(df2, df6)
+    q1.show(20, truncate=False)
+
+    print("\n=== Q2: Як тривалість фільму впливає на його рейтинг? ===")
+    q2 = question_2_runtime_rating(df2, df6)
+    q2.show(20, truncate=False)
+
+    print("\n=== Q3: Які актори мають найвищий середній рейтинг, якщо вони знялися мінімум у 10 фільмах? ===")
+    q3 = question_3_top_actors(df, df5, df6)
+    q3.show(20, truncate=False)
+
+    print("\n=== Q4: Як змінювався середній рейтинг фільмів по роках? ===")
+    q4 = question_4_rating_by_year(df2, df6)
+    q4.show(65, truncate=False)
+
+    print("\n=== Q5: Які ТОП-3 фільми в кожному жанрі за рейтингом? ===")
+    q5 = question_5_top_movies_by_genre(df2, df6)
+    q5.show(100, truncate=False)
+
+    print("\n=== Q6: Який фільм був найрейтинговішим у кожному році? ===")
+    q6 = question_6_top_movie_each_year(df2, df6)
+    q6.show(100, truncate=False)
 
     spark.stop()
 
