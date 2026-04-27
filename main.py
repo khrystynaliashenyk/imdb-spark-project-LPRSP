@@ -41,6 +41,16 @@ from transformation.business_questions_sofia import (
 )
 from transformation import business_questions_yuliia as bq
 
+from transformation.business_questions_sofiia_pas import (
+    question_1_ua_movies_2024,
+    question_2_longest_tv_series_post_2020,
+    question_3_akas_count_by_type,
+    question_4_avg_runtime_by_genre_2023,
+    question_5_top_translated_movies,
+    question_6_top_rated_movie_per_year
+)
+
+
 def main():
     os.environ["PYSPARK_PYTHON"] = sys.executable
     os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
@@ -48,6 +58,9 @@ def main():
     spark = (
         SparkSession.builder
         .appName("IMDB-Extraction-Stage")
+        .config("spark.driver.memory", "4g")
+        .config("spark.executor.memory", "4g")
+        .config("spark.sql.shuffle.partitions", "10")
         .config("spark.driver.host", "localhost")
         .getOrCreate()
     )
@@ -323,11 +336,31 @@ def main():
     bq.old_vs_new_genres(df2, df6).explain()
     bq.old_vs_new_genres(df2, df6).show(10)
 
+    print("\n=== Q1: Фільми 2024 року з українською локалізацією ===")
+    sq1 = question_1_ua_movies_2024(df2, df1)
+    sq1.show(10, truncate=False)
+
+    print("\n=== Q2: Топ-10 найдовших серіалів (tvSeries), випущених після 2020 року ===")
+    sq2 = question_2_longest_tv_series_post_2020(df2)
+    sq2.show(10, truncate=False)
+
+    print("\n=== Q3: Кількість записів у файлі akas для кожного типу контенту ===")
+    sq3 = question_3_akas_count_by_type(df2, df1)
+    sq3.show(20, truncate=False)
+
+    print("\n=== Q4: Середня тривалість фільмів для кожного жанру (тільки 2023 рік) ===")
+    sq4 = question_4_avg_runtime_by_genre_2023(df2)
+    sq4.show(50, truncate=False)
+
+    print("\n=== Q5: Топ-10 фільмів з найбільшою кількістю назв (перекладів) у akas ===")
+    sq5 = question_5_top_translated_movies(df2, df1)
+    sq5.show(10, truncate=False)
+
+    print("\n=== Q6: Найрейтинговіший фільм кожного року (2020-2024) ===")
+    sq6 = question_6_top_rated_movie_per_year(df2, df6)
+    sq6.show(10, truncate=False)
+
     spark.stop()
-
-
-
-
 
 if __name__ == "__main__":
     main()
