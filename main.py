@@ -59,6 +59,15 @@ from transformation.business_questions_khrystyna import (
    question_6_actors_by_total_votes
 )
 
+def save_to_csv(df, output_path):
+    (
+        df.coalesce(1)
+        .write
+        .mode("overwrite")
+        .option("header", "true")
+        .csv(output_path)
+    )
+
 
 def main():
     os.environ["PYSPARK_PYTHON"] = sys.executable
@@ -97,12 +106,15 @@ def main():
 
     df = load_data(spark, file_path, name_basics_schema)
 
+    # На цьому етапі RAW DATA виводити не потрібно
     print(f"\n=== RAW DATA: {dataset_name} ===")
     df.printSchema()
     df.show(5, truncate=False)
     print(f"Total number of rows in {dataset_name}: {df.count()}")
 
     df = preprocess_name_basics(df)
+
+    # EDA для name.basics на цьому етапі не потрібне
     print(f"\n=== PREPROCESSED DATA: {dataset_name} ===")
     get_metadata(df)
     get_numerical_stats(df, ["birthYear", "deathYear", "professionCount", "knownTitlesCount"])
@@ -111,12 +123,11 @@ def main():
     get_categorical_stats(df, ["primaryProfession"])
     numerical_cols, categorical_cols = get_column_types(df)
     analyze_feature_informativeness(df, numerical_cols, categorical_cols)
-
     run_numerical_plots(
-        df,
-        ["birthYear", "deathYear", "professionCount", "knownTitlesCount"],
-        dataset_name="name_basics"
-    )
+         df,
+         ["birthYear", "deathYear", "professionCount", "knownTitlesCount"],
+         dataset_name="name_basics"
+     )
 
     df1 = load_data(spark, file_path1, title_akas_schema)
 
@@ -127,6 +138,7 @@ def main():
 
     df1 = preprocess_title_akas(df1)
 
+    # EDA для title.akas на цьому етапі не потрібне
     print(f"\n=== PREPROCESSED DATA: {dataset_name1} ===")
     df1.printSchema()
     df1.show(5, truncate=False)
@@ -136,9 +148,7 @@ def main():
     get_duplicates_count(df1)
     get_categorical_stats(df1, ["region", "language", "types"])
     numerical_cols, categorical_cols = get_column_types(df1)
-
     analyze_feature_informativeness(df1, numerical_cols, categorical_cols)
-
     run_numerical_plots(
         df1,
         ["ordering", "typesCount", "attributesCount"],
@@ -181,6 +191,7 @@ def main():
 
     df3 = preprocess_title_crew(df3)
 
+    # EDA для title.crew на цьому етапі не потрібне
     print(f"\n=== PREPROCESSED DATA: {dataset_name3} ===")
     get_metadata(df3)
     get_numerical_stats(df3, ["directorsCount", "writersCount"])
@@ -188,9 +199,7 @@ def main():
     get_duplicates_count(df3)
     get_categorical_stats(df3, ["directors", "writers"])
     numerical_cols, categorical_cols = get_column_types(df3)
-
     analyze_feature_informativeness(df3, numerical_cols, categorical_cols)
-
     run_numerical_plots(
         df3,
         ["directorsCount", "writersCount"],
@@ -271,31 +280,39 @@ def main():
         ["averageRating", "numVotes", "weightedScore"],
         dataset_name="title_ratings"
     )
+
     print("\n=== TRANSFORMATION STAGE ===")
 
     print("\n=== Q1: Які жанри фільмів після 2010 року мають найвищий середній рейтинг? ===")
     q1 = question_1_top_modern_genres(df2, df6)
     q1.show(20, truncate=False)
+    save_to_csv(q1, "results/katya_q1_top_modern_genres")
 
     print("\n=== Q2: Як тривалість фільму впливає на його рейтинг? ===")
     q2 = question_2_runtime_rating(df2, df6)
     q2.show(20, truncate=False)
+    save_to_csv(q2, "results/katya_q2_runtime_rating")
 
     print("\n=== Q3: Які актори мають найвищий середній рейтинг, якщо вони знялися мінімум у 10 фільмах? ===")
     q3 = question_3_top_actors(df, df5, df6)
     q3.show(20, truncate=False)
+    save_to_csv(q3, "results/katya_q3_top_actors")
 
     print("\n=== Q4: Як змінювався середній рейтинг фільмів по роках? ===")
     q4 = question_4_rating_by_year(df2, df6)
     q4.show(65, truncate=False)
+    save_to_csv(q4, "results/katya_q4_rating_by_year")
 
     print("\n=== Q5: Які ТОП-3 фільми в кожному жанрі за рейтингом? ===")
     q5 = question_5_top_movies_by_genre(df2, df6)
     q5.show(100, truncate=False)
+    save_to_csv(q5, "results/katya_q5_top_movies_by_genre")
 
     print("\n=== Q6: Який фільм був найрейтинговішим у кожному році? ===")
     q6 = question_6_top_movie_each_year(df2, df6)
     q6.show(100, truncate=False)
+    save_to_csv(q6, "results/katya_q6_top_movie_each_year")
+
 
     print("\n=== Q1: Які 3 серіали у кожному кіножанрі мають найбільшу загальну кількість випущених епізодів? ===")
     q1 = question_1_top_series_episodes(df2, df4)
