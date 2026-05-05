@@ -311,30 +311,35 @@ def main():
     q6.show(100, truncate=False)
     save_to_csv(q6, "results/katya_q6_top_movie_each_year")
 
-
     print("\n=== Q1: Які 3 серіали у кожному кіножанрі мають найбільшу загальну кількість випущених епізодів? ===")
     q1 = question_1_top_series_episodes(df2, df4)
     q1.show(20, truncate=False)
+    save_to_csv(q1, "/results/sofia_q1_top_series_episodes")
 
     print("\n=== Q2: Який епізод має найбільшу тривалість у кожному сезоні? ===")
     q2 = question_2_longest_episode_per_season(df2, df4)
     q2.show(20, truncate=False)
+    save_to_csv(q2, "/results/sofia_q2_longest_episode_per_season")
 
     print("\n=== Q3: Скільки фільмів випущено без сценаристів? ===")
     q3 = question_3_movies_no_writers(df2, df3)
     q3.show(20, truncate=False)
+    save_to_csv(q3, "/results/sofia_q3_movies_no_writers")
 
     print("\n=== Q4: Які 5 найдовших фільмів кожного року? ===")
     q4 = question_4_longest_movies_per_year(df2)
     q4.show(20, truncate=False)
+    save_to_csv(q4, "/results/sofia_q4_longest_movies_per_year")
 
     print("\n=== Q5: Фільми у 'режисерському співавторстві'? ===")
     q5 = question_5_multiple_directors(df2, df3)
     q5.show(20, truncate=False)
+    save_to_csv(q5, "/results/sofia_q5_multiple_directors")
 
     print("\n=== Q6: Які серіали мають найбільшу кількість сезонів? ===")
     q6 = question_6_max_seasons_series(df2, df4)
     q6.show(20, truncate=False)
+    save_to_csv(q6, "/results/sofia_q6_max_seasons_series")
 
     q1 = bq.high_rating_low_votes(df2, df6)
     print("\n=== Q1: Фільми з високим рейтингом, але малою кількістю голосів: ===")
