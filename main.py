@@ -106,7 +106,6 @@ def main():
 
     df = load_data(spark, file_path, name_basics_schema)
 
-    # На цьому етапі RAW DATA виводити не потрібно
     print(f"\n=== RAW DATA: {dataset_name} ===")
     df.printSchema()
     df.show(5, truncate=False)
@@ -114,7 +113,6 @@ def main():
 
     df = preprocess_name_basics(df)
 
-    # EDA для name.basics на цьому етапі не потрібне
     print(f"\n=== PREPROCESSED DATA: {dataset_name} ===")
     get_metadata(df)
     get_numerical_stats(df, ["birthYear", "deathYear", "professionCount", "knownTitlesCount"])
@@ -138,7 +136,6 @@ def main():
 
     df1 = preprocess_title_akas(df1)
 
-    # EDA для title.akas на цьому етапі не потрібне
     print(f"\n=== PREPROCESSED DATA: {dataset_name1} ===")
     df1.printSchema()
     df1.show(5, truncate=False)
@@ -191,7 +188,6 @@ def main():
 
     df3 = preprocess_title_crew(df3)
 
-    # EDA для title.crew на цьому етапі не потрібне
     print(f"\n=== PREPROCESSED DATA: {dataset_name3} ===")
     get_metadata(df3)
     get_numerical_stats(df3, ["directorsCount", "writersCount"])
@@ -262,6 +258,7 @@ def main():
     df6.printSchema()
     df6.show(5, truncate=False)
     print(f"Total number of rows in {dataset_name6}: {df6.count()}")
+
     df6 = preprocess_title_ratings(df6)
 
     print(f"\n=== PREPROCESSED DATA: {dataset_name6} ===")
@@ -281,6 +278,7 @@ def main():
         dataset_name="title_ratings"
     )
 
+    
     print("\n=== TRANSFORMATION STAGE ===")
 
     print("\n=== Q1: Які жанри фільмів після 2010 року мають найвищий середній рейтинг? ===")
@@ -403,26 +401,32 @@ def main():
     print("\n=== Q1: Найвищий рейтинговий дебютний фільм режисера ===")
     q1 = question_1_debut_directors(df2, df3, df6, df)
     q1.show(20, truncate=False)
+    save_to_csv(q1, "/results/khrystyna_q1_debut_directors")
 
     print("\n=== Q2: Топ-5 жанрів по десятиліттях з 1980-го ===")
     q2 = question_2_top5_genres_by_decade(df2, df6)
     q2.show(50, truncate=False)
+    save_to_csv(q2, "/results/khrystyna_q2_top5_genres_by_decade")
 
     print("\n=== Q3: Сценаристи з найвищим індексом якості (мін. 8 фільмів) ===")
     q3 = question_3_writer_quality_index(df3, df2, df6, df)
     q3.show(20, truncate=False)
+    save_to_csv(q3, "/results/khrystyna_q3_writer_quality_index")
 
     print("\n=== Q4: Скільки фільмів щороку отримують рейтинг вище 8.0? ===")
     q4 = question_4_high_rated_per_year(df2, df6)
     q4.show(50, truncate=False)
+    save_to_csv(q4, "/results/khrystyna_q4_high_rated_per_year")
 
     print("\n=== Q5: Середній рейтинг фільмів за країною виробництва ===")
     q5 = question_5_avg_rating_by_country(df1, df2, df6)
     q5.show(20, truncate=False)
+    save_to_csv(q5, "/results/khrystyna_q5_avg_rating_by_country")
 
     print("\n=== Q6: Актори у фільмах з найбільшою сумарною кількістю голосів ===")
     q6 = question_6_actors_by_total_votes(df5, df2, df6, df)
     q6.show(20, truncate=False)
+    save_to_csv(q6, "/results/khrystyna_q6_actors_by_total_votes")
 
     spark.stop()
 
