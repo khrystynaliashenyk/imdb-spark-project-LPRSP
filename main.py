@@ -380,26 +380,32 @@ def main():
     print("\n=== Q1: Фільми 2024 року з українською локалізацією ===")
     sq1 = question_1_ua_movies_2024(df2, df1)
     sq1.show(10, truncate=False)
+    save_to_csv(sq1, "/results/sofiia_pasichko_q1_ukraine_localization")
 
     print("\n=== Q2: Топ-10 найдовших серіалів (tvSeries), випущених після 2020 року ===")
     sq2 = question_2_longest_tv_series_post_2020(df2)
     sq2.show(10, truncate=False)
+    save_to_csv(sq2, "/results/sofiia_pasichko_q2_long_series")
 
     print("\n=== Q3: Кількість записів у файлі akas для кожного типу контенту ===")
     sq3 = question_3_akas_count_by_type(df2, df1)
     sq3.show(20, truncate=False)
+    save_to_csv(sq3, "/results/sofiia_pasichko_q3_types_of_content")
 
     print("\n=== Q4: Середня тривалість фільмів для кожного жанру (тільки 2023 рік) ===")
     sq4 = question_4_avg_runtime_by_genre_2023(df2)
     sq4.show(50, truncate=False)
+    save_to_csv(sq4, "/results/sofiia_pasichko_q4_duration_of_genres")
 
     print("\n=== Q5: Топ-10 фільмів з найбільшою кількістю назв (перекладів) у akas ===")
     sq5 = question_5_top_translated_movies(df2, df1)
     sq5.show(10, truncate=False)
+    save_to_csv(sq5, "/results/sofiia_pasichko_q5_num_of_translations ")
 
     print("\n=== Q6: Найрейтинговіший фільм кожного року (2020-2024) ===")
     sq6 = question_6_top_rated_movie_per_year(df2, df6)
     sq6.show(10, truncate=False)
+    save_to_csv(sq6, "/results/sofiia_pasichko_q6_most_rated")
 
     print("\n=== TRANSFORMATION STAGE ===")
 
