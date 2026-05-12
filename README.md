@@ -161,6 +161,39 @@ All team members participated in local environment configuration.
 
 - **Kateryna Rubtsova** - реалізація універсального модуля data_loader, створення схеми до name.basics, інтеграція та тестування в main.py.
 - **Sofia Pasichko** - main, title.akas, title.basics, оформлення звіту
-- **Khrystyna Liashenyk** - main, title.ratings
+- **Sofia Pryslipska** - main, title.crew, title.episode, оформлення звіту
 - **Yulia Salishcheva** - main, title.principals, офомлення README.md
-- **Khrystyna Liashenyk** - main, title.ratings, офомлення презентації
+- **Khrystyna Liashenyk** - main, title.ratings, оформлення звіту
+
+### Етап 4 — Етап попередньої обробки даних
+
+- **Kateryna Rubtsova** - виконала EDA для датасету name_basics, зокрема отримання метаданих та числової статистики. Також реалізувала preprocessing для цього набору даних.
+- **Sofia Pasichko** - здійснила аналіз пропущених значень get_missing_values та preprocessing для датасетів title_akas і title_basics. Додатково займалася оформленням звіту.
+- **Khrystyna Liashenyk** - виконала пошук дублікатів get_duplicates_count та preprocessing для датасетів title_crew і title_episode.
+- **Yulia Salishcheva** - виконала EDA для категоріальних ознак get_categorical_stats та preprocessing для датасету title_principals. Також брала участь в оформленні README.md.
+- **Khrystyna Liashenyk** - провела аналіз інформативності ознак analyze_feature_informativeness та preprocessing для датасету title_ratings. Також займалася оформленням презентації.
+
+### Етап 5 — Етап трансформації
+
+- **Kateryna Rubtsova** - виконала 6 бізнес-питань, пов’язаних із аналізом рейтингів фільмів за жанрами, роками, тривалістю та акторами.
+- **Sofia Pasichko** - реалізувала 6 бізнес-питань щодо серіалів, епізодів, тривалості фільмів та режисерського співавторства.
+- **Khrystyna Liashenyk** - виконала 6 бізнес-питань з аналізу жанрів, сценаристів, акторів і рейтингу фільмів.
+- **Yulia Salishcheva** - реалізувала 6 бізнес-питань щодо рейтингових фільмів, жанрів та популярності акторів.
+- **Khrystyna Liashenyk** - виконала 6 бізнес-питань, пов’язаних із високорейтинговими фільмами, ефективністю жанрів і порівнянням класичних та сучасних фільмів.
+
+### Етап 6 — Етап запису результатів
+
+- **Kateryna Rubtsova** - збереження результатів 6 індивідуальних бізнес-питань у CSV-файли, оформлення звіту та презентації.
+- **Sofia Pasichko** - збереження результатів 6 індивідуальних бізнес-питань у CSV-файли, оформлення звіту та презентації.
+- **Khrystyna Liashenyk** - збереження результатів 6 індивідуальних бізнес-питань у CSV-файли, оформлення звіту та презентації.
+- **Yulia Salishcheva** - збереження результатів 6 індивідуальних бізнес-питань у CSV-файли, оформлення звіту та презентації.
+- **Khrystyna Liashenyk** - збереження результатів 6 індивідуальних бізнес-питань у CSV-файли, оформлення звіту та презентації.
+
+### Етап 7 — Етап презентації проекту
+- **Kateryna Rubtsova** - звіт/презентація.
+- **Sofia Pasichko** - звіт/презентація.
+- **Khrystyna Liashenyk** - звіт/презентація.
+- **Yulia Salishcheva** - звіт/презентація, офомлення README.md.
+- **Khrystyna Liashenyk** - звіт/презентація.
+
+
