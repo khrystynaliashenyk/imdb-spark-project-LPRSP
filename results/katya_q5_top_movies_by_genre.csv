@@ -1,0 +1,71 @@
+genre,rank,primaryTitle,startYear,averageRating,numVotes
+Action,1,The Dark Knight,2008,9.1,3161863
+Action,2,Attack on Titan the Movie: The Last Attack,2024,9.1,27414
+Action,3,Ramayana: The Legend of Prince Rama,1993,9.1,17696
+Adult,1,Bad Luck Banging or Loony Porn,2021,6.5,11919
+Adventure,1,Attack on Titan the Movie: The Last Attack,2024,9.1,27414
+Adventure,2,Ramayana: The Legend of Prince Rama,1993,9.1,17696
+Adventure,3,The Lord of the Rings: The Return of the King,2003,9.0,2161473
+Animation,1,Attack on Titan the Movie: The Last Attack,2024,9.1,27414
+Animation,2,Ramayana: The Legend of Prince Rama,1993,9.1,17696
+Animation,3,Demon Slayer: Kimetsu no Yaiba - Mt. Natagumo Arc,2020,8.7,18596
+Biography,1,Schindler's List,1993,9.0,1583382
+Biography,2,O.J.: Made in America,2016,8.9,23875
+Biography,3,The Message,1976,8.9,11913
+Comedy,1,The Chaos Class,1975,9.1,46127
+Comedy,2,Tosun Pasha,1976,8.9,26346
+Comedy,3,The Foster Brothers,1976,8.8,22515
+Crime,1,The Godfather,1972,9.2,2222766
+Crime,2,The Dark Knight,2008,9.1,3161863
+Crime,3,The Godfather Part II,1974,9.0,1493229
+Documentary,1,O.J.: Made in America,2016,8.9,23875
+Documentary,2,The Silence of Swastika,2021,8.9,10672
+Documentary,3,Stop Making Sense,1984,8.7,24070
+Drama,1,The Shawshank Redemption,1994,9.3,3182597
+Drama,2,The Godfather,1972,9.2,2222766
+Drama,3,The Dark Knight,2008,9.1,3161863
+Family,1,#Home,2021,8.7,19624
+Family,2,Resurrection,2018,8.7,18795
+Family,3,Mission Muh Dikhayi,2025,8.7,10654
+Fantasy,1,The Lord of the Rings: The Return of the King,2003,9.0,2161473
+Fantasy,2,The Lord of the Rings: The Fellowship of the Ring,2001,8.9,2203201
+Fantasy,3,The Lord of the Rings: The Two Towers,2002,8.8,1954056
+Film-Noir,1,Sunset Boulevard,1950,8.4,260916
+Film-Noir,2,Double Indemnity,1944,8.3,181132
+Film-Noir,3,I Am a Fugitive from a Chain Gang,1932,8.2,15732
+History,1,Schindler's List,1993,9.0,1583382
+History,2,Tosun Pasha,1976,8.9,26346
+History,3,The Message,1976,8.9,11913
+Horror,1,Manichithrathazhu,1993,8.7,14326
+Horror,2,The Silence of the Lambs,1991,8.6,1720274
+Horror,3,Alien,1979,8.5,1062529
+Music,1,Stop Making Sense,1984,8.7,24070
+Music,2,Toma,2021,8.6,13335
+Music,3,Pink Floyd: Live at Pompeii,1972,8.6,11503
+Musical,1,The Phantom of the Opera at the Royal Albert Hall,2011,8.8,10825
+Musical,2,Sita Ramam,2022,8.5,83577
+Musical,3,Singin' in the Rain,1952,8.3,282267
+Mystery,1,Mirror Game,2016,8.9,30968
+Mystery,2,Manichithrathazhu,1993,8.7,14326
+Mystery,3,Seven,1995,8.6,2017058
+News,1,Before the Flood,2016,8.2,29649
+News,2,Requiem for the American Dream,2015,8.0,10233
+News,3,"Food, Inc.",2008,7.8,53255
+Romance,1,Forrest Gump,1994,8.8,2492459
+Romance,2,The Phantom of the Opera at the Royal Albert Hall,2011,8.8,10825
+Romance,3,Life Is Beautiful,1997,8.6,811726
+Sci-Fi,1,Inception,2010,8.8,2811565
+Sci-Fi,2,Interstellar,2014,8.7,2521416
+Sci-Fi,3,The Matrix,1999,8.7,2243810
+Sport,1,Sarpatta Parambarai,2021,8.5,28554
+Sport,2,Jersey,2019,8.5,28213
+Sport,3,Senna,2010,8.4,83857
+Thriller,1,Mirror Game,2016,8.9,30968
+Thriller,2,Fight Club,1999,8.8,2601788
+Thriller,3,Kill Bill: The Whole Bloody Affair,2006,8.8,36691
+War,1,Shoah,1985,8.7,11578
+War,2,Saving Private Ryan,1998,8.6,1636055
+War,3,20 Days in Mariupol,2023,8.6,43905
+Western,1,"The Good, the Bad and the Ugly",1966,8.8,890284
+Western,2,Django Unchained,2012,8.5,1879790
+Western,3,Once Upon a Time in the West,1968,8.5,383804

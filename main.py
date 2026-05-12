@@ -59,6 +59,15 @@ from transformation.business_questions_khrystyna import (
    question_6_actors_by_total_votes
 )
 
+def save_to_csv(df, output_path):
+    (
+        df.coalesce(1)
+        .write
+        .mode("overwrite")
+        .option("header", "true")
+        .csv(output_path)
+    )
+
 
 def main():
     os.environ["PYSPARK_PYTHON"] = sys.executable
@@ -103,6 +112,7 @@ def main():
     print(f"Total number of rows in {dataset_name}: {df.count()}")
 
     df = preprocess_name_basics(df)
+
     print(f"\n=== PREPROCESSED DATA: {dataset_name} ===")
     get_metadata(df)
     get_numerical_stats(df, ["birthYear", "deathYear", "professionCount", "knownTitlesCount"])
@@ -111,12 +121,11 @@ def main():
     get_categorical_stats(df, ["primaryProfession"])
     numerical_cols, categorical_cols = get_column_types(df)
     analyze_feature_informativeness(df, numerical_cols, categorical_cols)
-
     run_numerical_plots(
-        df,
-        ["birthYear", "deathYear", "professionCount", "knownTitlesCount"],
-        dataset_name="name_basics"
-    )
+         df,
+         ["birthYear", "deathYear", "professionCount", "knownTitlesCount"],
+         dataset_name="name_basics"
+     )
 
     df1 = load_data(spark, file_path1, title_akas_schema)
 
@@ -136,9 +145,7 @@ def main():
     get_duplicates_count(df1)
     get_categorical_stats(df1, ["region", "language", "types"])
     numerical_cols, categorical_cols = get_column_types(df1)
-
     analyze_feature_informativeness(df1, numerical_cols, categorical_cols)
-
     run_numerical_plots(
         df1,
         ["ordering", "typesCount", "attributesCount"],
@@ -188,9 +195,7 @@ def main():
     get_duplicates_count(df3)
     get_categorical_stats(df3, ["directors", "writers"])
     numerical_cols, categorical_cols = get_column_types(df3)
-
     analyze_feature_informativeness(df3, numerical_cols, categorical_cols)
-
     run_numerical_plots(
         df3,
         ["directorsCount", "writersCount"],
@@ -253,6 +258,7 @@ def main():
     df6.printSchema()
     df6.show(5, truncate=False)
     print(f"Total number of rows in {dataset_name6}: {df6.count()}")
+
     df6 = preprocess_title_ratings(df6)
 
     print(f"\n=== PREPROCESSED DATA: {dataset_name6} ===")
@@ -271,129 +277,167 @@ def main():
         ["averageRating", "numVotes", "weightedScore"],
         dataset_name="title_ratings"
     )
+
+    
     print("\n=== TRANSFORMATION STAGE ===")
 
     print("\n=== Q1: Які жанри фільмів після 2010 року мають найвищий середній рейтинг? ===")
     q1 = question_1_top_modern_genres(df2, df6)
     q1.show(20, truncate=False)
+    save_to_csv(q1, "results/katya_q1_top_modern_genres")
 
     print("\n=== Q2: Як тривалість фільму впливає на його рейтинг? ===")
     q2 = question_2_runtime_rating(df2, df6)
     q2.show(20, truncate=False)
+    save_to_csv(q2, "results/katya_q2_runtime_rating")
 
     print("\n=== Q3: Які актори мають найвищий середній рейтинг, якщо вони знялися мінімум у 10 фільмах? ===")
     q3 = question_3_top_actors(df, df5, df6)
     q3.show(20, truncate=False)
+    save_to_csv(q3, "results/katya_q3_top_actors")
 
     print("\n=== Q4: Як змінювався середній рейтинг фільмів по роках? ===")
     q4 = question_4_rating_by_year(df2, df6)
     q4.show(65, truncate=False)
+    save_to_csv(q4, "results/katya_q4_rating_by_year")
 
     print("\n=== Q5: Які ТОП-3 фільми в кожному жанрі за рейтингом? ===")
     q5 = question_5_top_movies_by_genre(df2, df6)
     q5.show(100, truncate=False)
+    save_to_csv(q5, "results/katya_q5_top_movies_by_genre")
 
     print("\n=== Q6: Який фільм був найрейтинговішим у кожному році? ===")
     q6 = question_6_top_movie_each_year(df2, df6)
     q6.show(100, truncate=False)
+    save_to_csv(q6, "results/katya_q6_top_movie_each_year")
 
     print("\n=== Q1: Які 3 серіали у кожному кіножанрі мають найбільшу загальну кількість випущених епізодів? ===")
     q1 = question_1_top_series_episodes(df2, df4)
     q1.show(20, truncate=False)
+    save_to_csv(q1, "/results/sofia_q1_top_series_episodes")
 
     print("\n=== Q2: Який епізод має найбільшу тривалість у кожному сезоні? ===")
     q2 = question_2_longest_episode_per_season(df2, df4)
     q2.show(20, truncate=False)
+    save_to_csv(q2, "/results/sofia_q2_longest_episode_per_season")
 
     print("\n=== Q3: Скільки фільмів випущено без сценаристів? ===")
     q3 = question_3_movies_no_writers(df2, df3)
     q3.show(20, truncate=False)
+    save_to_csv(q3, "/results/sofia_q3_movies_no_writers")
 
     print("\n=== Q4: Які 5 найдовших фільмів кожного року? ===")
     q4 = question_4_longest_movies_per_year(df2)
     q4.show(20, truncate=False)
+    save_to_csv(q4, "/results/sofia_q4_longest_movies_per_year")
 
     print("\n=== Q5: Фільми у 'режисерському співавторстві'? ===")
     q5 = question_5_multiple_directors(df2, df3)
     q5.show(20, truncate=False)
+    save_to_csv(q5, "/results/sofia_q5_multiple_directors")
 
     print("\n=== Q6: Які серіали мають найбільшу кількість сезонів? ===")
     q6 = question_6_max_seasons_series(df2, df4)
     q6.show(20, truncate=False)
+    save_to_csv(q6, "/results/sofia_q6_max_seasons_series")
 
+    q1 = bq.high_rating_low_votes(df2, df6)
     print("\n=== Q1: Фільми з високим рейтингом, але малою кількістю голосів: ===")
-    bq.high_rating_low_votes(df2, df6).explain()
-    bq.high_rating_low_votes(df2, df6).show(10)
+    q1.explain()
+    q1.show(10)
+    save_to_csv(q1, "/results/yuliia_salishcheva_q1_high_rating_low_votes")
 
+    q2 = bq.best_movie_per_genre(df2, df6)
     print("\n=== Q2: Найкращий фільм у кожному жанрі за рейтингом:  ===")
-    bq.best_movie_per_genre(df2, df6).explain()
-    bq.best_movie_per_genre(df2, df6).show(10)
+    q2.explain()
+    q2.show(10)
+    save_to_csv(q2, "/results/yuliia_salishcheva_q2_best_movie_per_genre")
 
+    q3 = bq.median_runtime_per_genre(df2)
     print("\n=== Q3: Медіанна тривалість фільмів у кожному жанрі:  ===")
-    bq.median_runtime_per_genre(df2).explain()
-    bq.median_runtime_per_genre(df2).show(10)
+    q3.explain()
+    q3.show(10)
+    save_to_csv(q3, "/results/yuliia_salishcheva_q3_median_runtime_per_genre")
 
+    q4 = bq.genre_efficiency(df2, df6)
     print("\n=== Q4: Ефективність жанрів (Рейтинг / Тривалість):  ===")
-    bq.genre_efficiency(df2, df6).explain()
-    bq.genre_efficiency(df2, df6).show(10)
+    q4.explain()
+    q4.show(10)
+    save_to_csv(q4, "/results/yuliia_salishcheva_q4_genre_efficiency")
 
+    q5 = bq.epic_high_rated_movies(df2, df6)
     print("\n=== Q5: Фільми-рекордсмени (Довгі та високий рейтинг):  ===")
-    bq.epic_high_rated_movies(df2, df6).explain()
-    bq.epic_high_rated_movies(df2, df6).show(10)
+    q5.explain()
+    q5.show(10)
+    save_to_csv(q5, "/results/yuliia_salishcheva_q5_epic_high_rated_movies")
 
+    q6 = bq.old_vs_new_genres(df2, df6)
     print("\n=== Q6: Порівняння ер: Класика vs Сучасність:  ===")
-    bq.old_vs_new_genres(df2, df6).explain()
-    bq.old_vs_new_genres(df2, df6).show(10)
+    q6.explain()
+    q6.show(10)
+    save_to_csv(q6, "/results/yuliia_salishcheva_q6_old_vs_new_genres")
 
     print("\n=== Q1: Фільми 2024 року з українською локалізацією ===")
     sq1 = question_1_ua_movies_2024(df2, df1)
     sq1.show(10, truncate=False)
+    save_to_csv(sq1, "/results/sofiia_pasichko_q1_ukraine_localization")
 
     print("\n=== Q2: Топ-10 найдовших серіалів (tvSeries), випущених після 2020 року ===")
     sq2 = question_2_longest_tv_series_post_2020(df2)
     sq2.show(10, truncate=False)
+    save_to_csv(sq2, "/results/sofiia_pasichko_q2_long_series")
 
     print("\n=== Q3: Кількість записів у файлі akas для кожного типу контенту ===")
     sq3 = question_3_akas_count_by_type(df2, df1)
     sq3.show(20, truncate=False)
+    save_to_csv(sq3, "/results/sofiia_pasichko_q3_types_of_content")
 
     print("\n=== Q4: Середня тривалість фільмів для кожного жанру (тільки 2023 рік) ===")
     sq4 = question_4_avg_runtime_by_genre_2023(df2)
     sq4.show(50, truncate=False)
+    save_to_csv(sq4, "/results/sofiia_pasichko_q4_duration_of_genres")
 
     print("\n=== Q5: Топ-10 фільмів з найбільшою кількістю назв (перекладів) у akas ===")
     sq5 = question_5_top_translated_movies(df2, df1)
     sq5.show(10, truncate=False)
+    save_to_csv(sq5, "/results/sofiia_pasichko_q5_num_of_translations ")
 
     print("\n=== Q6: Найрейтинговіший фільм кожного року (2020-2024) ===")
     sq6 = question_6_top_rated_movie_per_year(df2, df6)
     sq6.show(10, truncate=False)
+    save_to_csv(sq6, "/results/sofiia_pasichko_q6_most_rated")
 
     print("\n=== TRANSFORMATION STAGE ===")
 
     print("\n=== Q1: Найвищий рейтинговий дебютний фільм режисера ===")
     q1 = question_1_debut_directors(df2, df3, df6, df)
     q1.show(20, truncate=False)
+    save_to_csv(q1, "/results/khrystyna_q1_debut_directors")
 
     print("\n=== Q2: Топ-5 жанрів по десятиліттях з 1980-го ===")
     q2 = question_2_top5_genres_by_decade(df2, df6)
     q2.show(50, truncate=False)
+    save_to_csv(q2, "/results/khrystyna_q2_top5_genres_by_decade")
 
     print("\n=== Q3: Сценаристи з найвищим індексом якості (мін. 8 фільмів) ===")
     q3 = question_3_writer_quality_index(df3, df2, df6, df)
     q3.show(20, truncate=False)
+    save_to_csv(q3, "/results/khrystyna_q3_writer_quality_index")
 
     print("\n=== Q4: Скільки фільмів щороку отримують рейтинг вище 8.0? ===")
     q4 = question_4_high_rated_per_year(df2, df6)
     q4.show(50, truncate=False)
+    save_to_csv(q4, "/results/khrystyna_q4_high_rated_per_year")
 
     print("\n=== Q5: Середній рейтинг фільмів за країною виробництва ===")
     q5 = question_5_avg_rating_by_country(df1, df2, df6)
     q5.show(20, truncate=False)
+    save_to_csv(q5, "/results/khrystyna_q5_avg_rating_by_country")
 
     print("\n=== Q6: Актори у фільмах з найбільшою сумарною кількістю голосів ===")
     q6 = question_6_actors_by_total_votes(df5, df2, df6, df)
     q6.show(20, truncate=False)
+    save_to_csv(q6, "/results/khrystyna_q6_actors_by_total_votes")
 
     spark.stop()
 
